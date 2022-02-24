@@ -1,0 +1,32 @@
+Spring MVC（model 模型层 view视图层 control控制层）
+服务端代码分为三层  表现层 业务层 数据访问层
+
+
+
+核心组件 前端控制器（DispatcherServlet）
+
+
+模板引擎   将model与模板文件拼装，形成动态HTML
+
+Thymeleaf 
+
+Spring.Thymeleaf.cache = true?false; 开启或关闭Thymeleaf的缓存，程序开发时关闭缓存，运行速度快，程序上线后开启缓存，降低服务器的负担
+
+                            获取get请求中的参数
+
+方法1（参数独立时）/student? name = "123"    path = /student
+使用@RequestParam(name = "参数名",required = "是否必须传入",defaultvaule =未传入的默认值 )  注解在参数之前
+
+方法2 （参数成为路径一部分时）/student/123   path = /student/{id}
+使用@Pathvariable（“路径变量名”） 参数
+
+                               处理post请求
+
+处理post请求函数中的参数名称与表单对应的name相同即可
+
+
+                            response动态html
+
+方法1 函数返回ModelAndView对象，既可以存储model的属性值，也可以定位view的位置
+方法2 函数返回String对象，参数传入model，model自动赋值，返回view位置即可
+
