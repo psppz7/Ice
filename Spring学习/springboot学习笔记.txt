@@ -1,0 +1,35 @@
+@SpringBootApplication注解的类相当于配置文件，自动创建spring容器，扫描带有@controller（处理请求）、@service（业务）、@repository（数据库访问）、@component（任何）注解的类，并装配到容器中
+
+核心为@component，任何注解中只要带有@component，就可被扫描，区别在于语义的不同
+以哪个类为配置文件启动，@ContextConfiguration（classes = 配置文件类.class）
+
+哪个类想获取spring容器，就在哪个类上实现接口ApplicationContextAware
+
+@postConstruct 注解的方法会在构造函数调用后自动调用
+@preDestroy 注解的方法会在该对象销毁前自动调用
+
+被spring容器管理的bean默认是单例模式，只能实例化一次，如果想取消单例模式，加注解@Scope(“”) 括号内默认为singleton（单例），可改为prototype（多例）
+
+如何导入第三方的Bean？
+
+自己写一个配置类  @configuration，自定义装配方法，方法前加@Bean，方法返回的对象会被装配到容器中，方法的名字即为Bean的名字
+
+
+
+
+获取bean的方法
+
+1.获取spring容器，使用容器中的getbean方法，通过bean的名字或者类型索引
+2.Ioc注入，直接定义所需bean的变量，变量前加注解@Autowired，则容器会自动将实例化的bean注入到定义的变量中，可加@qualifier（“bean的名字”）进行具体索引。
+
+
+@RequestMapping（“浏览器访问域名”）
+@ResponseBody（）代表返回给浏览器显示
+
+
+
+
+Spring MVC（model 模型层 view视图层 control控制层）
+
+
+服务端代码分为三层  表现层 业务层 数据访问层

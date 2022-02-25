@@ -1,5 +1,6 @@
 package com.nowcoder.community.controller;
 
+import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityConstant;
@@ -10,13 +11,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 
 @Controller
 public class LoginController implements CommunityConstant {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private Producer kaptcha;
 
     @RequestMapping(path = "/register",method = RequestMethod.GET)  //网站名
     public String getRegisterPage(Model model)
@@ -71,4 +82,24 @@ public class LoginController implements CommunityConstant {
         return "/site/login";
     }
 
+
+    @RequestMapping(path = "/kaptcha",method = RequestMethod.GET)
+    public void getKaptcha(HttpServletResponse response, HttpSession session)  //验证码需要存到session之内
+    {
+        //获取验证码
+        String str = kaptcha.createText();
+        BufferedImage image = kaptcha.createImage(str);
+
+        session.setAttribute("kaptchaStr",str);
+
+        response.setContentType("image/png");//输出图片适合使用字节流
+
+        try {
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(image,"png",os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

@@ -1,0 +1,6 @@
+1.引用的文件如果不是绝对路径，使用     th：@{路径}   的方式，可以自动在static文件夹中寻找
+2.循环输出 th:each="" (想循环输出什么就在什么上边加)
+3.日期输入th:text="${#dates.format(map.post.createTime,'yyyy-MM-dd HH:mm:ss')}    #dates.format()
+4.href后的代码使用th：@{路径}
+5.th：fragment = ""  将一段代码命名 使用时  th：replace = "引用文件名::代码段名称"
+6.当没有参数传入模板，并且模板中还使用了时，只使用参数名不会报错，访问参数内的变量会报错  user.username   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

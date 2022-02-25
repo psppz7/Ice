@@ -1,0 +1,12 @@
+cookie 只能携带字符串（一组key&value）， 浏览器第一次向服务器发送请求，服务器可以将cookie发送给浏览器，
+cookie保存在浏览器端，下次浏览器向服务器发送请求时，会将cookie一起发送
+cookie的存储量小，且保存在浏览器端，不安全
+
+
+
+session 可以存储任何数据，浏览器第一次向服务器发送请求，服务器生成session保存在服务器端，并返回给浏览器一个cookie
+cookie中保存sessionId（此步为自动调用）
+
+session安全，存储量大，但是会增加服务器的压力
+
+使用cookie和session组合，可以实现服务器记住浏览器的功能

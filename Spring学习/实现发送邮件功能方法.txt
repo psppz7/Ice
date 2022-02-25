@@ -1,0 +1,26 @@
+邮箱开启SMTP服务     用 @Value(“${xxxx}”)注解从配置文件读取值
+
+导入jar包
+
+
+application.properties中写入配置
+
+# mail
+spring.mail.host=smtp.qq.com  #邮箱类型
+spring.mail.port=465  #端口
+spring.mail.username=943413496@qq.com #用户名
+spring.mail.password=010209spz #密码
+spring.mail.protocol=smtps #协议
+spring.mail.properties.mail.smtp.ssl.enable = true #附加配置
+
+使用javamailsender类进行邮件发送
+javamailsender 有两种方法 createMimeMessage和send  构建邮件主体和发送
+
+每次发邮件的参数  发件人 收件人 邮件标题 邮件内容
+
+发件人
+
+1、使用javamailsender构建Mimemessage
+2、将构建的Mimemessage传入MimemessageHelper
+3、使用Helper中的set方法，设置发件人，收件人，标题，内容    from to subject text  （setText中第二个参数可以允许发送html）
+4、使用javamailsender的send方法将Mimemessage发送
