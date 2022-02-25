@@ -1,0 +1,8 @@
+session对象为线程隔离
+
+但是缺点太多
+
+使用threadlocal代替
+
+threadlocal相当于一个map，以线程为key进行存取值 ，所以可以做到线程隔离
+

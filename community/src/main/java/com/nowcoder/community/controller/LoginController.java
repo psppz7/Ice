@@ -1,17 +1,20 @@
 package com.nowcoder.community.controller;
 
 import com.google.code.kaptcha.Producer;
+import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.*;
@@ -24,10 +27,11 @@ import java.util.Map;
 public class LoginController implements CommunityConstant {
 
     @Autowired
-    private UserService userService;
+    private UserService userService;//用户服务
 
     @Autowired
-    private Producer kaptcha;
+    private Producer kaptcha;//验证码服务
+
 
     @RequestMapping(path = "/register",method = RequestMethod.GET)  //网站名
     public String getRegisterPage(Model model)
@@ -77,7 +81,7 @@ public class LoginController implements CommunityConstant {
     }
 
     @RequestMapping(path = "/login",method = RequestMethod.GET)
-    public String login()
+    public String getLoginPage()
     {
         return "/site/login";
     }
@@ -101,5 +105,44 @@ public class LoginController implements CommunityConstant {
             e.printStackTrace();
         }
 
+    }
+
+    @RequestMapping(path = "/login",method = RequestMethod.POST)
+    public String login(String username,String password,String code,boolean isremember,Model model,HttpSession session,HttpServletResponse response)
+    {
+        //检查验证码
+        String kaptcha = String.valueOf(session.getAttribute("kaptchaStr"));
+        if(!kaptcha.equalsIgnoreCase(code))//忽略大小写
+        {
+            model.addAttribute("codeMsg","验证码不正确");
+            return "/site/login";
+        }
+        //检查账号密码
+        //登录凭证有效时间
+        int expiredSeconds = isremember? CommunityConstant.REMEMBER_EXPIRED:CommunityConstant.DEFAULT_EXPIRED;
+        Map<String,String> map = userService.login(username,password,expiredSeconds);
+        if(map.containsKey("ticket"))
+        {
+            Cookie cookie = new Cookie("ticket",map.get("ticket"));
+            cookie.setPath("${server.servlet.context-path}");
+            cookie.setMaxAge(expiredSeconds);
+            response.addCookie(cookie);
+
+            return "redirect:index";
+        }
+        else
+        {
+
+            model.addAttribute("usernameMsg",map.get("usernameMsg"));
+            model.addAttribute("passwordMsg",map.get("passwordMsg"));
+
+            return "/site/login";
+        }
+    }
+    @RequestMapping(path = "/logout")
+    public String logout(@CookieValue("ticket") String ticket)
+    {
+        userService.logout(ticket);
+        return "redirect:/index";
     }
 }
