@@ -141,4 +141,38 @@ public class UserService implements CommunityConstant {
     {
         return loginTicketMapper.selectLoginTicket(ticket);
     }
+
+    public int updateHeader(int id,String url)
+    {
+       return userMapper.updateHeader(id,url);
+    }
+
+    public int updatePassword(int id,String password)
+    {
+        loginTicketMapper.updateStatusById(id,1);
+        return userMapper.updatePassword(id,password);
+    }
+
+    public void forgetPassword(String email,String newPassword)
+    {
+        Map<String,String> map = new HashMap<>();
+       User user = userMapper.selectByEmail(email);
+       newPassword = CommunityUtil.md5(newPassword+user.getSalt());
+       userMapper.updatePassword(user.getId(),newPassword);
+    }
+    public Map<String,String> getForgetKaptcha(String email,String code)
+    {
+        Map<String,String> map = new HashMap<>();
+        User user = userMapper.selectByEmail(email);
+        if(user==null)
+        {
+            map.put("emailMsg","该账号不存在");
+            return map;
+        }
+
+        mailClient.sendMail(email,"密码找回--验证码",code);
+        map.put("emailMsg","验证码已发送");
+        return map;
+    }
+
 }

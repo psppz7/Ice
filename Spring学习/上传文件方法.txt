@@ -1,0 +1,9 @@
+上传文件只能使用post请求
+
+controller接受MultpartFile 对象
+
+new File（）
+
+MultipartFile. transferTo (file) 即可将文件存入本地
+
+前端表单 中加入 enctype = “multipart/form-data”

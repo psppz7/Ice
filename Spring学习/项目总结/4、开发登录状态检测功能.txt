@@ -1,0 +1,11 @@
+由于每次请求都需要进行登录状态检测，所以使用spring中的拦截器，分别在controller处理之前，temlate处理之前，以及temlate处理之后进行拦截处理
+
+controller处理之前检测浏览器的cookies，如果有key为ticket的cookie，则查数据库看登录状态是否失效（登录状态失效或登录凭证过期）
+
+使用查找到的loginTicket中的userid，查找到登录的user并获得user对象
+
+将user对象存入threadLocal中，因为ThreadLocal为线程隔离
+
+在temlate处理之前，将ThreadLocal中的user对象传入model，在模板中使用
+
+在temlate处理之后，清空ThreadLocal，防止内存占用过大

@@ -1,0 +1,13 @@
+因为resources中的文件编译后都会进入class文件夹
+
+所以使用类加载器即可获取resources文件夹中的文件
+
+this.getClass().getClassLoader().getResourceAsStream(name : "  ");
+
+获取的为InputStream
+
+将字节流转为字符流 InputStreamReader()
+
+将字符流转为缓冲流 BufferedReader（）
+
+使用缓冲流读取txt文本

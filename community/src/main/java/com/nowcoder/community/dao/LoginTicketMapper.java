@@ -14,4 +14,6 @@ public interface LoginTicketMapper {
 
     int updateStatus(String ticket,int status);
 
+    int updateStatusById(int id,int status);
+
 }

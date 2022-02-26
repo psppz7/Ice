@@ -1,0 +1,17 @@
+1、拦截器类需要实现 HandlerInterceptor接口
+
+该接口内的三个函数为默认实现，可以有选择的进行重写
+
+分别为在controller之前
+在controller之后，temlate之前
+在temlate之后
+
+2.拦截器需要配置类才可以使用
+
+配置类需要实现WebMvcConfigurer接口
+
+将拦截类注入后
+
+重写addIntercepter方法，使用registry.addInterceptor将拦截类加入，并可以设置什么拦截，什么不拦截
+
+拦截器先注册的会先执行！！！！！！！！！！！！！！！！

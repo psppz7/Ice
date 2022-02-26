@@ -15,10 +15,17 @@
             where ticket = #{ticket}
       </select>
 
+
     <update id="updateStatus">
         update login_ticket
         set status = #{status}
         where ticket = #{ticket}
+    </update>
+
+    <update id="updateStatusById">
+        update login_ticket
+        set status = #{status}
+        where  user_id = #{id}
     </update>
 
 </mapper>
