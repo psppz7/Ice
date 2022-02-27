@@ -174,5 +174,4 @@ public class UserService implements CommunityConstant {
         map.put("emailMsg","验证码已发送");
         return map;
     }
-
 }

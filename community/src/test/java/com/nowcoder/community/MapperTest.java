@@ -28,6 +28,7 @@ public class MapperTest {
     @Autowired
     private DiscussPostMapper discussPostMapper;
 
+
     @Test
     public void selectuser()
     {
@@ -126,5 +127,20 @@ public class MapperTest {
     public void testUpdateLoginTicket()
     {
         loginTicketMapper.updateStatus("abc",2);
+    }
+    @Test
+    public void testInsertDiscussPost()
+    {
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setUserId(20);
+        discussPost.setStatus(1);
+        discussPost.setContent("123");
+        discussPost.setCreateTime(new Date(System.currentTimeMillis()));
+        discussPost.setType(1);
+        discussPost.setCommentCount(2);
+        discussPost.setScore(20.0);
+        discussPost.setTitle("123");
+
+        discussPostMapper.insertDiscussPost(discussPost);
     }
 }

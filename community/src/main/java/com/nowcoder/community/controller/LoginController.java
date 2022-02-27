@@ -128,7 +128,7 @@ public class LoginController implements CommunityConstant {
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
 
-            return "redirect:index";
+            return "redirect:/index";
         }
         else
         {

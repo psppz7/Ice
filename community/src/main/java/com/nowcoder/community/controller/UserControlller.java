@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -152,7 +153,9 @@ public class UserControlller {
         String kaptcha = (String) session.getAttribute("kaptchaStr");
         if(!kaptcha.equalsIgnoreCase(code))
         {
+            System.out.println(code);
             model.addAttribute("codeMsg","验证码错误");
+            model.addAttribute("email",email);
             return "/site/forget";
         }
         userService.forgetPassword(email,newPassword);
@@ -162,13 +165,14 @@ public class UserControlller {
     }
 
     @RequestMapping(path = "/forget/kaptcha",method = RequestMethod.GET)
-    public String getForgetKapthca(String email, Model model, HttpSession session)
+    public String getForgetKapthca(@PathParam("email") String email, Model model, HttpSession session)
     {
         String code = kaptcha.createText();
         session.setAttribute("kaptchaStr",code);
       Map<String,String> map =  userService.getForgetKaptcha(email,code);
         model.addAttribute("emailMsg",map.get("emailMsg"));
-        return "site/forget";
+        model.addAttribute("email",email);
+        return "redirect:/user/forget";
     }
 
 }

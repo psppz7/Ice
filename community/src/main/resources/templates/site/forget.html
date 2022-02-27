@@ -62,12 +62,12 @@
 		<!-- 内容 -->
 		<div class="main">
 			<div class="container pl-5 pr-5 pt-3 pb-3 mt-3 mb-3">
-				<form class="mt-5">				
+				<form class="mt-5" method="post" th:action="@{/user/forget}">
 					<div class="form-group row">
 						<label for="your-email" class="col-sm-2 col-form-label text-right">邮箱:</label>
 						<div class="col-sm-10">
-							<input type="email" th:class="|form-control ${emailMsg==null?'':'is-invalid'}|" id="your-email" placeholder="请输入您的邮箱!" required
-							th:value="${param.email}">
+							<input type="email" th:class="|form-control ${emailMsg==null?'':'is-invalid'}|" name="email" id="your-email" placeholder="请输入您的邮箱!" required
+							th:value="${email}">
 							<div class="invalid-feedback"th:text="${emailMsg}">
 								该邮箱已被注册!
 							</div>
@@ -76,19 +76,19 @@
 					<div class="form-group row mt-4">
 						<label for="verifycode" class="col-sm-2 col-form-label text-right">验证码:</label>
 						<div class="col-sm-6">
-							<input type="text" th:class="|form-control ${codeMsg==null?'':'is-invalid'}|" id="verifycode" placeholder="请输入验证码!">
+							<input type="text" th:class="|form-control ${codeMsg==null?'':'is-invalid'}|" name="code" id="verifycode" placeholder="请输入验证码!">
 							<div class="invalid-feedback"th:text="${codeMsg}">
 								验证码不正确!
 							</div>
 						</div>
 						<div class="col-sm-4">
-							<a href="javascript:;" class="btn btn-info form-control">获取验证码</a>
+							<a href="javascript:send_email()" id="send_email" class="btn btn-info form-control">获取验证码</a>
 						</div>
-					</div>	
+					</div>
 					<div class="form-group row mt-4">
 						<label for="your-password" class="col-sm-2 col-form-label text-right">新密码:</label>
 						<div class="col-sm-10">
-							<input type="password" class="form-control" id="your-password" placeholder="请输入新的密码!" required
+							<input type="password" class="form-control" id="your-password" name="newPassword" placeholder="请输入新的密码!" required
 							th:value="${param.newPassword}">
 							<div class="invalid-feedback">
 								密码长度不能小于8位!
@@ -172,5 +172,23 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<script th:src="@{/js/global.js}"></script>
+	<script>
+		function send_email()
+		{
+			var a = document.getElementById('send_email')
+			a.style.pointerEvents = 'none'
+			a.style.background = 'none'
+			a.innerText = '10秒后可发送'
+			var email = $("#your-email").val()
+			var path = Context_Path + "/user/forget/kaptcha?email=" + email;
+			$.get(path)
+			setTimeout(()=>{
+				a.innerText = '发送验证码'
+				a.style.pointerEvents = 'auto'
+				a.style.background = '#1593A6'
+			},10000)
+		}
+
+	</script>
 </body>
 </html>
