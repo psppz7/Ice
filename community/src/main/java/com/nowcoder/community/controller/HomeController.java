@@ -39,8 +39,11 @@ public class HomeController {
             map.put("user",user);
             list2.add(map);
         }
+
         model.addAttribute("page",page);
         model.addAttribute("discussPosts",list2);
         return "/index";
     }
+
+
 }

@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -165,14 +166,17 @@ public class UserControlller {
     }
 
     @RequestMapping(path = "/forget/kaptcha",method = RequestMethod.GET)
+    @ResponseBody
     public String getForgetKapthca(@PathParam("email") String email, Model model, HttpSession session)
     {
         String code = kaptcha.createText();
         session.setAttribute("kaptchaStr",code);
       Map<String,String> map =  userService.getForgetKaptcha(email,code);
-        model.addAttribute("emailMsg",map.get("emailMsg"));
-        model.addAttribute("email",email);
-        return "redirect:/user/forget";
+        if(map.get("emailMsg")!=null)
+        {
+          return CommunityUtil.getJsonString(0,null,null);
+        }
+        return "1";
     }
 
 }

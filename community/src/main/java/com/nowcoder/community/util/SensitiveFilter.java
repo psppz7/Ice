@@ -16,7 +16,7 @@ public class SensitiveFilter {
     //敏感词替换常量
     private  final String REPLACEMENT = "***" ;
     private TrieNode root = new TrieNode(); //根节点
-    //前缀树
+
     @PostConstruct
     public void initTrie()
     {
@@ -116,7 +116,7 @@ public class SensitiveFilter {
     }
 
 
-
+    //前缀树
     private class TrieNode{
 
         //是否为底部节点
