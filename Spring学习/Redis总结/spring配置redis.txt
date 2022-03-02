@@ -1,0 +1,28 @@
+1、maven将redis包导入
+2、总配置文件中配置  
+#redis
+spring.redis.database=11  //使用第几个数据库  redis内部共有16个数据库
+spring.redis.host=localhost  //ip地址
+spring.redis.port=6379  //端口 默认6379
+
+3.创建配置类，将RedisTemplate装配到spring容器中
+
+ @Bean
+    public RedisTemplate<String,Object> resdisTemplate(RedisConnectionFactory factory)
+    {
+        RedisTemplate template = new RedisTemplate();
+        template.setConnectionFactory(factory);
+
+        //设置key的序列化方式
+        template.setKeySerializer(RedisSerializer.string());
+        //普通的value序列化方式
+        template.setValueSerializer(RedisSerializer.json());
+        //设置哈希的key的序列化方式
+        template.setHashKeySerializer(RedisSerializer.string());
+        //设置哈希的value的序列化方式
+        template.setHashValueSerializer(RedisSerializer.json());
+
+        template.afterPropertiesSet();
+
+        return template;
+    }

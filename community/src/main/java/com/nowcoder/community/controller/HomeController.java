@@ -4,7 +4,9 @@ import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.util.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
     @Autowired
     DiscussPostService discussPostService;
     @Autowired
     UserService userService;
-
+    @Autowired
+    LikeService likeService;
     @RequestMapping(path = "/index")
     public String showDiscussPosts(Model model, Page page)
     {
@@ -34,9 +37,11 @@ public class HomeController {
         for(DiscussPost d : list1)
         {
             User user = userService.findUserById(d.getUserId());
+            long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST,d.getId());
             Map<String,Object> map = new HashMap<>();
             map.put("post",d);
             map.put("user",user);
+            map.put("likeCount",likeCount);
             list2.add(map);
         }
 

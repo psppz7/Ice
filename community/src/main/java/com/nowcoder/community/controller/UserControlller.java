@@ -3,6 +3,7 @@ package com.nowcoder.community.controller;
 import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.annotation.LoginRequired;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
@@ -40,6 +41,9 @@ public class UserControlller {
 
     @Autowired
     private Producer kaptcha;
+
+    @Autowired
+    LikeService likeService;
 
     @Value("${community.path.domain}")
     private String domain;
@@ -177,6 +181,18 @@ public class UserControlller {
           return CommunityUtil.getJsonString(0,null,null);
         }
         return "1";
+    }
+
+    @RequestMapping(path = "/profile",method = RequestMethod.GET)
+    public String getProfilePage(Model model)
+    {
+        User user = hostHolder.getUser();
+        long likeCount = likeService.findUserLikeCount(user.getId());
+
+        model.addAttribute("userLikeCount",likeCount);
+        model.addAttribute("user",user);
+
+        return "/site/profile";
     }
 
 }
