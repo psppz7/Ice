@@ -1,8 +1,9 @@
 package com.nowcoder.community.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class User {
+public class User implements Serializable {
     private int id;
     private String username;
     private String password;
@@ -13,6 +14,15 @@ public class User {
     private String activationCode;
     private String headerUrl;
     private Date createTime;
+    private String ticket;
+
+    public String getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
+    }
 
     public int getId() {
         return id;

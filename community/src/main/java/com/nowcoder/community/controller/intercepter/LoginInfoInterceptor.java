@@ -34,6 +34,7 @@ public class LoginInfoInterceptor implements HandlerInterceptor {
              {
                  User user = userService.findUserById(loginTicket.getUserId());
                  //在本次请求中持有用户
+                 user.setTicket(ticket);
                  hostHolder.setUser(user);
              }
          }

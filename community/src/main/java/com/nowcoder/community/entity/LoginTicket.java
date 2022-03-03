@@ -1,8 +1,9 @@
 package com.nowcoder.community.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class LoginTicket {
+public class LoginTicket implements Serializable {
     private int id;
     private int userId;
     private String ticket;

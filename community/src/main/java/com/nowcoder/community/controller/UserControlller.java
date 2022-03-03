@@ -2,7 +2,9 @@ package com.nowcoder.community.controller;
 
 import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.annotation.LoginRequired;
+import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
+import com.nowcoder.community.service.FollowService;
 import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityUtil;
@@ -12,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -27,6 +26,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -43,7 +45,10 @@ public class UserControlller {
     private Producer kaptcha;
 
     @Autowired
-    LikeService likeService;
+    private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @Value("${community.path.domain}")
     private String domain;
@@ -139,7 +144,7 @@ public class UserControlller {
             model.addAttribute("newPasswordMsg","新密码与原密码相同");
             return "/site/setting";
         }
-        userService.updatePassword(user.getId(),newPassword);
+        userService.updatePassword(user.getTicket(),user.getId(),newPassword);
 
         model.addAttribute("msg","密码修改成功，将为您跳转到登录页面");
         model.addAttribute("path","/login");
@@ -183,16 +188,69 @@ public class UserControlller {
         return "1";
     }
 
-    @RequestMapping(path = "/profile",method = RequestMethod.GET)
-    public String getProfilePage(Model model)
+    @RequestMapping(path = "/profile/{id}",method = RequestMethod.GET)
+    public String getProfilePage(Model model,@PathVariable("id") int userId)
     {
-        User user = hostHolder.getUser();
+        User user = userService.findUserById(userId);
         long likeCount = likeService.findUserLikeCount(user.getId());
+        boolean alreadyFollowed = followService.findIsFollowed(userId);
+        long followerCount = followService.findFollowerCount(userId);
+        long followeeCount = followService.findFolloweeCount(userId);
 
+        model.addAttribute("alreadyFollowed",alreadyFollowed);
         model.addAttribute("userLikeCount",likeCount);
         model.addAttribute("user",user);
+        model.addAttribute("followerCount",followerCount);
+        model.addAttribute("followeeCount",followeeCount);
+
 
         return "/site/profile";
+    }
+
+    @RequestMapping(path = "/follower/{id}",method = RequestMethod.GET)
+    public String getFollowerPage(Model model, Page page,@PathVariable("id") int userId)
+    {
+        User user = userService.findUserById(userId);
+        page.setLimit(5);
+        page.setPath("/user/follower");
+        page.setRows((int) followService.findFollowerCount(userId));
+
+       List<User> list = followService.findFollowerList(userId,page.getOffset(),page.getLimit());
+        List<Map<String,Object>> lists = new ArrayList<>();
+       for(User u : list)
+
+       {    Map<String,Object> map = new HashMap<>();
+          Boolean alreadyFollow = followService.findIsFollowed(u.getId());
+          map.put("alreadyFollow",alreadyFollow);
+          map.put("follower",u);
+          lists.add(map);
+       }
+       model.addAttribute("followers",lists);
+       model.addAttribute("user",user);
+       return "/site/follower";
+    }
+
+    @RequestMapping(path = "followee/{id}",method = RequestMethod.GET)
+    public String getFolloweePage(Model model,Page page,@PathVariable("id") int userId)
+    {
+        User user = userService.findUserById(userId);
+        page.setLimit(5);
+        page.setPath("/user/followee");
+        page.setRows((int) followService.findFollowerCount(userId));
+
+        List<User> list = followService.findFolloweeList(userId,page.getOffset(),page.getLimit());
+        List<Map<String,Object>> lists = new ArrayList<>();
+        for(User u : list)
+
+        {    Map<String,Object> map = new HashMap<>();
+            Boolean alreadyFollow = followService.findIsFollowed(u.getId());
+            map.put("alreadyFollow",alreadyFollow);
+            map.put("followee",u);
+            lists.add(map);
+        }
+        model.addAttribute("followees",lists);
+        model.addAttribute("user",user);
+        return "/site/followee";
     }
 
 }

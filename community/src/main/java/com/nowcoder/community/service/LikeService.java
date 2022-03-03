@@ -71,7 +71,6 @@ public class LikeService implements CommunityConstant {
     public long findEntityLikeCount(int entityType,int entityId)
     {
         String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType,entityId);
-        System.out.println(entityLikeKey);
         return redisTemplate.opsForSet().size(entityLikeKey);
     }
 
