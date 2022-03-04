@@ -75,7 +75,7 @@
 				</h6>
 				<!-- 作者 -->
 				<div class="media pb-3 border-bottom">
-					<a href="profile.html">
+					<a th:href="@{|/user/profile/${userId}|}">
 						<img th:src="${headerUrl}" class="align-self-start mr-4 rounded-circle user-header" alt="用户头像" >
 					</a>
 					<div class="media-body">
@@ -84,7 +84,7 @@
 							发布于 <b th:text="${createTime}">2019-04-15 15:32:18</b>
 							<ul class="d-inline float-right">
 								<li class="d-inline ml-2">
-									<a href="javascript:;" th:onclick="|like(this,1,${id});|" class="text-primary">
+									<a href="javascript:;" th:onclick="|like(this,1,${id},${userId},${id});|" class="text-primary">
 										<b th:text="${likeStatus==0?'赞':'已赞'}">赞</b>
 										<i th:text="${likeCount}">11 </i>
 									</a>
@@ -135,7 +135,7 @@
 								<span>发布于 <b th:text="${#dates.format(map.comment.createTime)}">2019-04-15 15:32:18</b></span>
 								<ul class="d-inline float-right">
 									<li class="d-inline ml-2">
-										<a href="javascript:;" th:onclick="|like(this,2,${map.comment.id});|" class="text-primary">
+										<a href="javascript:;" th:onclick="|like(this,2,${map.comment.id},${map.user.id},${id});|" class="text-primary">
 											<b th:text="${map.commentLikeStatus==0?'赞':'已赞'}">赞</b>
 											<i th:text="${map.commentLikeCount}">
 												(1)
@@ -159,7 +159,7 @@
 										<span th:text="${#dates.format(reply.comment.createTime)}">2019-04-15 15:32:18</span>
 										<ul class="d-inline float-right">
 											<li class="d-inline ml-2">
-												<a href="javascript:;" th:onclick= "|like(this,2,${reply.comment.id});|" class="text-primary">
+												<a href="javascript:;" th:onclick= "|like(this,2,${reply.comment.id},${reply.user.id},${id});|" class="text-primary">
 												<b th:text="${reply.replyLikeStatus==0?'赞':'已赞'}">赞</b>
 												<i th:text="${reply.replyLikeCount}">(1)</i>
 												</a>

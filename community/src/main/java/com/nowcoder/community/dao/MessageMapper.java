@@ -26,4 +26,22 @@ public interface MessageMapper {
 
     //增加消息
     int insertLetter(Message message);
+
+    //查询点赞通知列表
+    List<Message> selectLikeNotices(int userId,int offset,int limit);
+    //查询评论通知列表
+    List<Message> selectCommentNotices(int userId,int offset,int limit);
+    //查询关注通知列表
+    List<Message> selectFollowNotices(int userId,int offset,int limit);
+
+    //查询最新系统通知
+    Message selectLastNotice(int userId,String conversationId);
+
+    //查询特定用户特定系统信息的数量
+    int selectNoticeCount(int userId,String conversationId);
+
+    int selectNoticeUnreadCount(int userId,String conversationId);
+
+    int updateNoticeStatus(int id,int status);
+
 }

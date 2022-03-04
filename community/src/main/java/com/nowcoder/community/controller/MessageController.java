@@ -78,4 +78,23 @@ public class MessageController {
         else
             return CommunityUtil.getJsonString(-1,"发送失败",null);
     }
+
+    //获取通知界面
+    @RequestMapping(path = "/notice",method = RequestMethod.GET)
+    public String getNoticePage(Model model)
+    {
+        Map<String,Object> map =  messageService.getNoticePage();
+        model.addAttribute("map",map);
+
+        return "/site/notice";
+    }
+    //获取通知具体界面
+    @RequestMapping(path = "/notice/detail/{type}",method = RequestMethod.GET)
+    public String getNoticeDetail(Model model,Page page,@PathVariable("type") String type )
+    {
+        List<Map<String,Object>> list = messageService.getNoticeDetail(type,page.getOffset(),page.getLimit());
+        model.addAttribute("list",list);
+
+        return "/site/notice-detail";
+    }
 }
