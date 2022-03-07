@@ -1,8 +1,11 @@
 package com.nowcoder.community.event;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.Event;
 import com.nowcoder.community.entity.Message;
+import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.service.ElasticSearchService;
 import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.util.CommunityConstant;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -23,6 +26,12 @@ public class EventConsumer implements CommunityConstant {
 
     @Autowired
     MessageService messageService;
+
+    @Autowired
+    DiscussPostService discussPostService;
+
+    @Autowired
+    ElasticSearchService elasticSearchService;
 
     @KafkaListener(topics ={TOPIC_COMMENT,TOPIC_LIKE,TOPIC_FOLLOW} )
     public void handleMessage(ConsumerRecord record)
@@ -59,5 +68,19 @@ public class EventConsumer implements CommunityConstant {
         message.setContent(JSONObject.toJSONString(content));
 
         messageService.addMessage(message);
+    }
+
+    @KafkaListener(topics = {TOPIC_PUBLISH})
+    public void handlePublish(ConsumerRecord record)  //将发布的帖子发送到ES服务器保存
+    {
+        if(record==null||record.value()==null)
+            return;
+        Event event = JSONObject.parseObject(record.value().toString(),Event.class);
+        if(event == null)
+            return;
+
+       DiscussPost post = discussPostService.findDiscussPostsById(event.getEntityId());
+       elasticSearchService.saveDiscussPost(post);
+
     }
 }
