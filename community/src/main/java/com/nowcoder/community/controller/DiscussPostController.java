@@ -72,7 +72,9 @@ public class DiscussPostController implements CommunityConstant{
     {
         Map<String,Object> map = discussPostService.showDiscussDetail(id);
         long postLikeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST,id);
-        int likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(),ENTITY_TYPE_POST,id);
+        int likeStatus = 0;
+        if(hostHolder.getUser()!=null)
+        likeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(),ENTITY_TYPE_POST,id);
         if(map.keySet()!=null) {
             model.addAttribute("userId",map.get("userId") );
             model.addAttribute("title", map.get("title"));
@@ -100,7 +102,9 @@ public class DiscussPostController implements CommunityConstant{
         for(Comment c: commentList)
         {
             long commentLikeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT,c.getId());
-            int commentLikeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(),ENTITY_TYPE_COMMENT,c.getId());
+            int commentLikeStatus = 0;
+            if(hostHolder.getUser()!=null)
+            commentLikeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(),ENTITY_TYPE_COMMENT,c.getId());
             Map<String,Object> tem1 = new HashMap<>();  //回复
 
             User user = userService.findUserById(c.getUserId());
@@ -114,7 +118,9 @@ public class DiscussPostController implements CommunityConstant{
             for(Comment r : replys)
             {
                 long replyLikeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT,r.getId());
-                int replyLikeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(),ENTITY_TYPE_COMMENT,r.getId());
+                int replyLikeStatus = 0;
+                if(hostHolder.getUser()!=null)
+                replyLikeStatus = likeService.findEntityLikeStatus(hostHolder.getUser().getId(),ENTITY_TYPE_COMMENT,r.getId());
                 Map<String,Object> tem2 = new HashMap<>();  //回复的回复
                 if(r.getTargetId()!=0)
                 {
@@ -137,6 +143,49 @@ public class DiscussPostController implements CommunityConstant{
         model.addAttribute("replyInfo",replyInfo);
         return "/site/discuss-detail";
     }
+    //置顶
+    @RequestMapping(path = "/top/{id}",method = RequestMethod.GET)
+    public String top(@PathVariable("id") int discussPostId)
+    {
+        discussPostService.top(discussPostId);
+        Event event = new Event();
+        event.setTopic(TOPIC_PUBLISH);
+        event.setEntityType(ENTITY_TYPE_POST);
+        event.setEntityId(discussPostId);
 
+        eventProducer.fireEvent(event);
+
+        return "redirect:/discuss/detail/"+discussPostId;
+    }
+
+    @RequestMapping(path = "/elite/{id}",method = RequestMethod.GET)
+    public String elite(@PathVariable("id") int discussPostId)
+    {
+        discussPostService.elite(discussPostId);
+        //触发发帖事件，更新ES中的数据
+        Event event = new Event();
+        event.setTopic(TOPIC_PUBLISH);
+        event.setEntityType(ENTITY_TYPE_POST);
+        event.setEntityId(discussPostId);
+
+        eventProducer.fireEvent(event);
+
+        return "redirect:/discuss/detail/" + discussPostId;
+    }
+
+    @RequestMapping(path = "/delete/{id}",method = RequestMethod.GET)
+    public String delete(@PathVariable("id") int discussPostId)
+    {
+        discussPostService.delete(discussPostId);
+
+        Event event = new Event();
+        event.setTopic(TOPIC_DELETE);
+        event.setEntityType(ENTITY_TYPE_POST);
+        event.setEntityId(discussPostId);
+
+        eventProducer.fireEvent(event);
+
+        return "redirect:/index";
+    }
 
 }

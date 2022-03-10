@@ -8,6 +8,8 @@ public class RedisKeyUtil {
     private static final String PREFIX_KAPTHCA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user:";
+    private static final String PREFIX_UV = "uv";
+    private static final String PREFIX_DAU = "dau";
     //key的格式为 like:entity:entityType:entityId
     public static String getEntityLikeKey(int entityType,int entityId)
     {
@@ -42,4 +44,26 @@ public class RedisKeyUtil {
     {
         return PREFIX_USER+ SPILIT + userId;
     }
+    //单日uv
+    public static String getUvKey(String date)
+    {
+        return PREFIX_UV + SPILIT + date;
+    }
+    //区间uv
+    public static String getUvKey(String startDate,String endDate)
+    {
+        return PREFIX_UV + SPILIT + startDate + SPILIT + endDate;
+    }
+    //单日活跃用户
+    public static String getDauKey(String date)
+    {
+        return PREFIX_DAU + SPILIT + date;
+    }
+    //区间活跃用户
+    public static String getDauKey(String startDate,String endDate)
+    {
+        return PREFIX_DAU + SPILIT + startDate + SPILIT + endDate;
+    }
+
+
 }

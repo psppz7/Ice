@@ -81,6 +81,16 @@ public class EventConsumer implements CommunityConstant {
 
        DiscussPost post = discussPostService.findDiscussPostsById(event.getEntityId());
        elasticSearchService.saveDiscussPost(post);
-
+    }
+    @KafkaListener(topics = {TOPIC_DELETE})
+    public void handleDelete(ConsumerRecord record)
+    {
+        if(record==null||record.value()==null)
+            return;
+        Event event = JSONObject.parseObject(record.value().toString(),Event.class);
+        if(event == null)
+            return;
+        DiscussPost post = discussPostService.findDiscussPostsById(event.getEntityId());
+        elasticSearchService.deleteDiscussPost(post.getId());
     }
 }

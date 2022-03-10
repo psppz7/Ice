@@ -77,4 +77,28 @@ public class DiscussPostService {
         return    discussPostMapper.selectDiscussPostById(id);
     }
 
+    public void top(int discussPostId)
+    {
+        DiscussPost post = discussPostMapper.selectDiscussPostById(discussPostId);
+        if(post.getType()!=1)
+            discussPostMapper.updateType(discussPostId,1);
+        else
+            discussPostMapper.updateType(discussPostId,0);
+
+    }
+
+    public void elite(int discussPostId)
+    {
+        DiscussPost post = discussPostMapper.selectDiscussPostById(discussPostId);
+        if(post.getStatus()!=1)
+            discussPostMapper.updateStatus(discussPostId,1);
+        else
+            discussPostMapper.updateStatus(discussPostId,0);
+    }
+
+    public void delete(int discussPostId)
+    {
+        discussPostMapper.updateStatus(discussPostId,2);
+    }
+
 }

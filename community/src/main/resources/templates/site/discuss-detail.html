@@ -68,9 +68,12 @@
 					<img src="http://static.nowcoder.com/images/img/icons/ico-discuss.png"/>
 					<span th:utext="${title}">备战春招，面试刷题跟他复习，一个月全搞定！</span>
 					<div class="float-right">
-						<button type="button" class="btn btn-danger btn-sm">置顶</button>
-						<button type="button" class="btn btn-danger btn-sm">加精</button>
-						<button type="button" class="btn btn-danger btn-sm">删除</button>
+						<a  class="btn btn-danger btn-sm" th:href="@{|/discuss/top/${id}|}"
+						th:text="${type!=1?'置顶':'取消置顶'}" th:if="${loginUser!=null&&loginUser.type!=0}">置顶</a>
+						<a  class="btn btn-danger btn-sm" th:href="@{|/discuss/elite/${id}|}"
+						th:text="${status!=1?'加精':'取消加精'}" th:if="${loginUser!=null&&loginUser.type!=0}">加精</a>
+						<a  class="btn btn-danger btn-sm" th:href="@{|/discuss/delete/${id}|}"
+							th:if="${loginUser!=null&&loginUser.type==1}">删除</a>
 					</div>
 				</h6>
 				<!-- 作者 -->

@@ -28,6 +28,18 @@ public interface CommunityConstant {
 
     String TOPIC_PUBLISH = "publish";
 
+    String TOPIC_DELETE = "delete";
+
     //系统用户id
     int SYSTEM_USERID = 1;
+
+    // 权限普通用户
+    String AUTHORITY_USER = "user";
+
+    // 权限管理员
+    String AUTHORITY_ADMIN = "admin";
+
+    // 权限版主
+    String AUTHORITY_MODERATOR = "moderator";
+
 }
